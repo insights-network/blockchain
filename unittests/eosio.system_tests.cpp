@@ -1388,10 +1388,10 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
    const asset net = core_from_string("80.0000");
    const asset cpu = core_from_string("80.0000");
    const std::vector<account_name> voters = { N(producvotera), N(producvoterb), N(producvoterc), N(producvoterd) };
-   for (const auto& v: voters) {
+   for (const auto& v: voters) {  // Create the voter accounts.
       create_account_with_resources( v, config::system_account_name, core_from_string("1.0000"), false, net, cpu );
       transfer( config::system_account_name, v, core_from_string("100000000.0000"), config::system_account_name );
-      BOOST_REQUIRE_EQUAL(success(), stake(v, core_from_string("30000000.0000"), core_from_string("30000000.0000")) );
+      BOOST_REQUIRE_EQUAL(success(), stake(v, core_from_string("5000000.0000"), core_from_string("5000000.0000")) );
    }
 
    // create accounts {defproducera, defproducerb, ..., defproducerz, abcproducera, ..., defproducern} and register as producers
@@ -1400,16 +1400,16 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
       producer_names.reserve('z' - 'a' + 1);
       {
          const std::string root("defproducer");
-         for ( char c = 'a'; c <= 'z'; ++c ) {
+         for ( char c = 'a'; c <= 'z'; ++c ) {  // defproducer{a, ..., c}, 26
             producer_names.emplace_back(root + std::string(1, c));
          }
       }
       {
          const std::string root("abcproducer");
-         for ( char c = 'a'; c <= 'n'; ++c ) {
+         for ( char c = 'a'; c <= 'n'; ++c ) {  // abcproducer{a, ..., n}, 14
             producer_names.emplace_back(root + std::string(1, c));
          }
-      }
+      }  // Total number of block producer candidates: 40
       setup_producer_accounts(producer_names);
       for (const auto& p: producer_names) {
          BOOST_REQUIRE_EQUAL( success(), regproducer(p) );
@@ -1443,12 +1443,12 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
       BOOST_REQUIRE (0 == proda["last_claim_time"].as<uint64_t>() && 0 == prodz["last_claim_time"].as<uint64_t>());
 
       // check vote ratios
-      BOOST_REQUIRE ( 0 < proda["total_votes"].as<double>() && 0 < prodz["total_votes"].as<double>() );
-      BOOST_TEST( proda["total_votes"].as<double>() == prodj["total_votes"].as<double>() );
-      BOOST_TEST( prodk["total_votes"].as<double>() == produ["total_votes"].as<double>() );
-      BOOST_TEST( prodv["total_votes"].as<double>() == prodz["total_votes"].as<double>() );
-      BOOST_TEST( 2 * proda["total_votes"].as<double>() == 3 * produ["total_votes"].as<double>() );
-      BOOST_TEST( proda["total_votes"].as<double>() ==  3 * prodz["total_votes"].as<double>() );
+      BOOST_REQUIRE ( 0 < proda["total_votes"].as<double>() && 0 < prodz["total_votes"].as<double>() );  // The total votes of these two bps are positive.
+      BOOST_TEST( proda["total_votes"].as<double>() == prodj["total_votes"].as<double>() );  // a (1) and j (10) received the same number of votes.
+      BOOST_TEST( prodk["total_votes"].as<double>() == produ["total_votes"].as<double>() );  // k (11) and u (21) received the same number of votes
+      BOOST_TEST( prodv["total_votes"].as<double>() == prodz["total_votes"].as<double>() );  // v (22) and z (26) received the same number of votes
+      BOOST_TEST( 2 * proda["total_votes"].as<double>() == 3 * produ["total_votes"].as<double>() );  // a (1) got 50% more votes than u (21)
+      BOOST_TEST( proda["total_votes"].as<double>() ==  3 * prodz["total_votes"].as<double>() );  // a received 3x as many votes as z
    }
 
    // give a chance for everyone to produce blocks
@@ -1470,9 +1470,9 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
    }
 
    std::vector<double> vote_shares(producer_names.size());
-   {
+   {  // 
       double total_votes = 0;
-      for (uint32_t i = 0; i < producer_names.size(); ++i) {
+      for (uint32_t i = 0; i < producer_names.size(); ++i) {  // Add up total votes of each block producer.
          vote_shares[i] = get_producer_info(producer_names[i])["total_votes"].as<double>();
          total_votes += vote_shares[i];
       }
