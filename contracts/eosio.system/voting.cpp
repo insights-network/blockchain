@@ -26,7 +26,7 @@ namespace eosiosystem {
    using eosio::singleton;
    using eosio::transaction;
 
-   const int INITIAL_PRODUCER_TOTAL = 4;
+   const int NUM_PRODUCERS = 5;
 
    /**
     *  This method will create a producer_config and producer_info object for 'producer'
@@ -78,9 +78,9 @@ namespace eosiosystem {
       auto idx = _producers.get_index<N(prototalvote)>();
 
       std::vector< std::pair<eosio::producer_key,uint16_t> > top_producers;
-      top_producers.reserve(INITIAL_PRODUCER_TOTAL);
+      top_producers.reserve(NUM_PRODUCERS);
 
-      for ( auto it = idx.cbegin(); it != idx.cend() && top_producers.size() < INITIAL_PRODUCER_TOTAL && 0 < it->total_votes && it->active(); ++it ) {
+      for ( auto it = idx.cbegin(); it != idx.cend() && top_producers.size() < NUM_PRODUCERS && 0 < it->total_votes && it->active(); ++it ) {
          top_producers.emplace_back( std::pair<eosio::producer_key,uint16_t>({{it->owner, it->producer_key}, it->location}) );
       }
 
