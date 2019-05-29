@@ -235,7 +235,8 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
         }
 
         auto producer_candidates = {  // place of interest
-                N(proda), N(prodb), N(prodc), N(prodd), N(prode), N(runnerup1), N(runnerup2), N(runnerup3)
+                N(proda), N(prodb), N(prodc), N(prodd), N(prode), N(prodq), N(prodr), N(prods), N(prodt),
+                N(produ), N(runnerup1), N(runnerup2), N(runnerup3)
         };
 
         // Register producers
