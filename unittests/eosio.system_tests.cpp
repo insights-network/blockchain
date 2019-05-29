@@ -1454,19 +1454,19 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
    // give a chance for everyone to produce blocks
    {
       produce_blocks(23 * 12 + 20);
-      bool all_21_produced = true;
-      for (uint32_t i = 0; i < 21; ++i) {
+      bool all_5_produced = true;
+      for (uint32_t i = 0; i < 5; ++i) {
          if (0 == get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
-            all_21_produced = false;
+            all_5_produced = false;
          }
       }
       bool rest_didnt_produce = true;
-      for (uint32_t i = 21; i < producer_names.size(); ++i) {
+      for (uint32_t i = 5; i < producer_names.size(); ++i) {
          if (0 < get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
             rest_didnt_produce = false;
          }
       }
-      BOOST_REQUIRE(all_21_produced && rest_didnt_produce);
+      BOOST_REQUIRE(all_5_produced && rest_didnt_produce);
    }
 
    std::vector<double> vote_shares(producer_names.size());
@@ -1821,19 +1821,19 @@ BOOST_FIXTURE_TEST_CASE(producer_onblock_check, eosio_system_tester) try {
    // give a chance for everyone to produce blocks
    {
       produce_blocks(21 * 12);
-      bool all_21_produced = true;
-      for (uint32_t i = 0; i < 21; ++i) {
+      bool all_5_produced = true;
+      for (uint32_t i = 0; i < 5; ++i) {
          if (0 == get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
-            all_21_produced= false;
+            all_5_produced= false;
          }
       }
       bool rest_didnt_produce = true;
-      for (uint32_t i = 21; i < producer_names.size(); ++i) {
+      for (uint32_t i = 5; i < producer_names.size(); ++i) {
          if (0 < get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
             rest_didnt_produce = false;
          }
       }
-      BOOST_REQUIRE_EQUAL(false, all_21_produced);
+      BOOST_REQUIRE_EQUAL(false, all_5_produced);
       BOOST_REQUIRE_EQUAL(true, rest_didnt_produce);
    }
 
@@ -1860,19 +1860,19 @@ BOOST_FIXTURE_TEST_CASE(producer_onblock_check, eosio_system_tester) try {
    // give a chance for everyone to produce blocks
    {
       produce_blocks(21 * 12);
-      bool all_21_produced = true;
-      for (uint32_t i = 0; i < 21; ++i) {
+      bool all_5_produced = true;
+      for (uint32_t i = 0; i < 5; ++i) {
          if (0 == get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
-            all_21_produced= false;
+            all_5_produced= false;
          }
       }
       bool rest_didnt_produce = true;
-      for (uint32_t i = 21; i < producer_names.size(); ++i) {
+      for (uint32_t i = 5; i < producer_names.size(); ++i) {
          if (0 < get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
             rest_didnt_produce = false;
          }
       }
-      BOOST_REQUIRE_EQUAL(true, all_21_produced);
+      BOOST_REQUIRE_EQUAL(true, all_5_produced);
       BOOST_REQUIRE_EQUAL(true, rest_didnt_produce);
       BOOST_REQUIRE_EQUAL(success(),
                           push_action(producer_names.front(), N(claimrewards), mvo()("owner", producer_names.front())));
@@ -2407,19 +2407,19 @@ BOOST_FIXTURE_TEST_CASE( vote_producers_in_and_out, eosio_system_tester ) try {
    // give a chance for everyone to produce blocks
    {
       produce_blocks(23 * 12 + 20);
-      bool all_21_produced = true;
-      for (uint32_t i = 0; i < 21; ++i) {
+      bool all_5_produced = true;
+      for (uint32_t i = 0; i < 5; ++i) {
          if (0 == get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
-            all_21_produced = false;
+            all_5_produced = false;
          }
       }
       bool rest_didnt_produce = true;
-      for (uint32_t i = 21; i < producer_names.size(); ++i) {
+      for (uint32_t i = 5; i < producer_names.size(); ++i) {
          if (0 < get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
             rest_didnt_produce = false;
          }
       }
-      BOOST_REQUIRE(all_21_produced && rest_didnt_produce);
+      BOOST_REQUIRE(all_5_produced && rest_didnt_produce);
    }
 
    {
