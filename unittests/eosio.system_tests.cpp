@@ -1744,8 +1744,8 @@ BOOST_FIXTURE_TEST_CASE(producers_upgrade_system_contract, eosio_system_tester) 
                        )
    );
 
-   // get 15 approvals
-   for ( size_t i = 0; i < 14; ++i ) {
+   // get 4 approvals
+   for ( size_t i = 0; i < 3; ++i ) {
       BOOST_REQUIRE_EQUAL(success(), push_action_msig( name(producer_names[i]), N(approve), mvo()
                                                        ("proposer",      "alice1111111")
                                                        ("proposal_name", "upgrade1")
@@ -1764,7 +1764,7 @@ BOOST_FIXTURE_TEST_CASE(producers_upgrade_system_contract, eosio_system_tester) 
    );
 
    // one more approval
-   BOOST_REQUIRE_EQUAL(success(), push_action_msig( name(producer_names[14]), N(approve), mvo()
+   BOOST_REQUIRE_EQUAL(success(), push_action_msig( name(producer_names[4]), N(approve), mvo()
                                                     ("proposer",      "alice1111111")
                                                     ("proposal_name", "upgrade1")
                                                     ("level",         permission_level{ name(producer_names[14]), config::active_name })
