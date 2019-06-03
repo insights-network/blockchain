@@ -2246,8 +2246,8 @@ BOOST_FIXTURE_TEST_CASE( multiple_namebids, eosio_system_tester ) try {
 
    produce_block();
    // stake but but not enough to go live
-   stake_with_transfer( config::system_account_name, "bob",  core_from_string( "35000000.0000" ), core_from_string( "35000000.0000" ) );
-   stake_with_transfer( config::system_account_name, "carl", core_from_string( "35000000.0000" ), core_from_string( "35000000.0000" ) );
+   stake_with_transfer( config::system_account_name, "bob",  core_from_string( "8750000.0000" ), core_from_string( "8750000.0000" ) );
+   stake_with_transfer( config::system_account_name, "carl", core_from_string( "8750000.0000" ), core_from_string( "8750000.0000" ) );
    BOOST_REQUIRE_EQUAL( success(), vote( N(bob), { N(producer) } ) );
    BOOST_REQUIRE_EQUAL( success(), vote( N(carl), { N(producer) } ) );
 
