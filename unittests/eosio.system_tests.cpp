@@ -1814,13 +1814,12 @@ BOOST_FIXTURE_TEST_CASE(producer_onblock_check, eosio_system_tester) try {
    BOOST_REQUIRE_EQUAL(0, get_producer_info( producer_names.front() )["total_votes"].as<double>());
    BOOST_REQUIRE_EQUAL(0, get_producer_info( producer_names.back() )["total_votes"].as<double>());
 
-
+   // Initially, only producvotera stakes tokens.
    transfer(config::system_account_name, "producvotera", core_from_string("200000000.0000"), config::system_account_name);
-   BOOST_REQUIRE_EQUAL(success(), stake("producvotera", core_from_string("70000000.0000"), core_from_string("70000000.0000") ));
+   BOOST_REQUIRE_EQUAL(success(), stake("producvotera", core_from_string("20000000.0000"), core_from_string("20000000.0000") ));
    BOOST_REQUIRE_EQUAL(success(), vote( N(producvotera), vector<account_name>(producer_names.begin(), producer_names.begin()+10)));
-   // Temporarily commented out. Bring back in when ready. TODO
-   //BOOST_CHECK_EQUAL( wasm_assert_msg( "cannot undelegate bandwidth until the chain is activated (at least 15% of all tokens participate in voting)" ),
-   //                   unstake( "producvotera", core_from_string("50.0000"), core_from_string("50.0000") ) );
+   BOOST_CHECK_EQUAL( wasm_assert_msg( "cannot undelegate bandwidth until the chain is activated (at least 15% of all tokens participate in voting)" ),
+                      unstake( "producvotera", core_from_string("50.0000"), core_from_string("50.0000") ) );
 
    // give a chance for everyone to produce blocks
    {
@@ -1843,7 +1842,7 @@ BOOST_FIXTURE_TEST_CASE(producer_onblock_check, eosio_system_tester) try {
 
    {
       const char* claimrewards_activation_error_message = "cannot claim rewards until the chain is activated (at least 15% of all tokens participate in voting)";
-      BOOST_CHECK_EQUAL(0, get_global_state()["total_unpaid_blocks"].as<uint32_t>());  // Easy
+      BOOST_CHECK_EQUAL(0, get_global_state()["total_unpaid_blocks"].as<uint32_t>());
       BOOST_REQUIRE_EQUAL(wasm_assert_msg( claimrewards_activation_error_message ),
                           push_action(producer_names.front(), N(claimrewards), mvo()("owner", producer_names.front())));
       BOOST_REQUIRE_EQUAL(0, get_balance(producer_names.front()).get_amount());
