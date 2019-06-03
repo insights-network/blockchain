@@ -2399,7 +2399,7 @@ BOOST_FIXTURE_TEST_CASE( vote_producers_in_and_out, eosio_system_tester ) try {
 
    for (const auto& v: voters) {
       transfer( config::system_account_name, v, core_from_string("200000000.0000"), config::system_account_name );
-      BOOST_REQUIRE_EQUAL(success(), stake(v, core_from_string("30000000.0000"), core_from_string("30000000.0000")) );
+      BOOST_REQUIRE_EQUAL(success(), stake(v, core_from_string("5000000.0000"), core_from_string("5000000.0000")) );
    }
 
    {
@@ -2431,7 +2431,7 @@ BOOST_FIXTURE_TEST_CASE( vote_producers_in_and_out, eosio_system_tester ) try {
       produce_block(fc::hours(7));
       const uint32_t voted_out_index = 20;
       const uint32_t new_prod_index  = 23;
-      BOOST_REQUIRE_EQUAL(success(), stake("producvoterd", core_from_string("40000000.0000"), core_from_string("40000000.0000")));
+      BOOST_REQUIRE_EQUAL(success(), stake("producvoterd", core_from_string("2500000.0000"), core_from_string("2500000.0000")));
       BOOST_REQUIRE_EQUAL(success(), vote(N(producvoterd), { producer_names[new_prod_index] }));
       BOOST_REQUIRE_EQUAL(0, get_producer_info(producer_names[new_prod_index])["unpaid_blocks"].as<uint32_t>());
       produce_blocks(4 * 12 * 21);
