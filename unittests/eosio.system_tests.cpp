@@ -1468,8 +1468,7 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
       }
 
       // Separated out so I can tell which one is failing
-      BOOST_REQUIRE(all_21_produced);
-      BOOST_REQUIRE(rest_didnt_produce);
+      BOOST_REQUIRE(all_21_produced && rest_didnt_produce);
    }
 
    std::vector<double> vote_shares(producer_names.size());
