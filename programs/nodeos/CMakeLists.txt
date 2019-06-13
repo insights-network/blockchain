@@ -4,6 +4,8 @@ if( UNIX AND NOT APPLE )
   set(rt_library rt )
 endif()
 
+set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
 find_package( Gperftools QUIET )
 if( GPERFTOOLS_FOUND )
     message( STATUS "Found gperftools; compiling ${NODE_EXECUTABLE_NAME} with TCMalloc")
