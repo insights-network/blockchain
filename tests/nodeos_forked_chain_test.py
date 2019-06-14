@@ -25,6 +25,7 @@ Print=Utils.Print
 from core_symbol import CORE_SYMBOL
 
 def analyzeBPs(bps0, bps1, expectDivergence):
+    Print("Print called with %s | %s | %s" % (bps0, bps1, expectDivergence))
     start=0
     index=None
     length=len(bps0)
@@ -115,7 +116,7 @@ Utils.Debug=args.v
 totalProducerNodes=2
 totalNonProducerNodes=1
 totalNodes=totalProducerNodes+totalNonProducerNodes
-maxActiveProducers=21
+maxActiveProducers=5
 totalProducers=maxActiveProducers
 cluster=Cluster(walletd=True)
 dumpErrorDetails=args.dump_error_details
@@ -296,7 +297,7 @@ try:
     preKillBlockNum=nonProdNode.getBlockNum()
     preKillBlockProducer=nonProdNode.getBlockProducerByNum(preKillBlockNum)
     # kill at last block before defproducerl, since the block it is killed on will get propagated
-    killAtProducer="defproducerk"
+    killAtProducer="defproducerc"
     nonProdNode.killNodeOnProducer(producer=killAtProducer, whereInSequence=(inRowCountPerProducer-1))
 
 
