@@ -101,7 +101,7 @@ def verifyProductionRounds(trans, node, prodsActive, rounds):
     for i in range(0, rounds):
         prodsSeen={}
         lastBlockProducer=None
-        for j in range(0, 21):
+        for j in range(0, 5):
             # each new set of 12 blocks should have a different blockProducer 
             if lastBlockProducer is not None and lastBlockProducer==node.getBlockProducerByNum(blockNum):
                 Utils.cmdError("expected blockNum %s to be produced by any of the valid producers except %s" % (blockNum, lastBlockProducer))
@@ -126,10 +126,10 @@ def verifyProductionRounds(trans, node, prodsActive, rounds):
                     Utils.errorExit("Failed because of incorrect block producer order")
                 blockNum+=1
 
-    # make sure that we have seen all 21 producers
+    # make sure that we have seen all 5 producers
     prodsSeenKeys=prodsSeen.keys()
-    if len(prodsSeenKeys)!=21:
-        Utils.cmdError("only saw %s producers of expected 21. At blockNum %s only the following producers were seen: %s" % (len(prodsSeenKeys), blockNum, ",".join(prodsSeenKeys)))
+    if len(prodsSeenKeys)!=5:
+        Utils.cmdError("only saw %s producers of expected 5. At blockNum %s only the following producers were seen: %s" % (len(prodsSeenKeys), blockNum, ",".join(prodsSeenKeys)))
         Utils.errorExit("Failed because of missing block producers")
 
     Utils.Debug=temp
@@ -168,7 +168,7 @@ try:
     cluster.killall(allInstances=killAll)
     cluster.cleanup()
     Print("Stand up cluster")
-    if cluster.launch(prodCount=prodCount, onlyBios=False, pnodes=totalNodes, totalNodes=totalNodes, totalProducers=totalNodes*21, p2pPlugin=p2pPlugin, useBiosBootFile=False) is False:
+    if cluster.launch(prodCount=prodCount, onlyBios=False, pnodes=totalNodes, totalNodes=totalNodes, totalProducers=totalNodes*5, p2pPlugin=p2pPlugin, useBiosBootFile=False) is False:
         Utils.cmdError("launcher")
         Utils.errorExit("Failed to stand up eos cluster.")
 
@@ -233,7 +233,7 @@ try:
 
     verifyProductionRounds(trans, node2, prodsActive, 2)
 
-    # test shifting all 21 away from one node to another
+    # test shifting all 5 away from one node to another
     # first account will vote for node2 producers, all others will vote for node3 producers
     node1
     for account in accounts:
