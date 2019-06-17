@@ -180,7 +180,6 @@ BOOST_AUTO_TEST_SUITE(bootseq_tests)
 
 BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
     try {
-
         // Create eosio.msig and eosio.token
         create_accounts({N(eosio.msig), N(eosio.token), N(eosio.ram), N(eosio.ramfee), N(eosio.stake), N(eosio.vpay), N(eosio.bpay), N(eosio.saving) });
 
@@ -230,15 +229,18 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
            auto r = buyram(config::system_account_name, a.aname, asset(ram));
            BOOST_REQUIRE( !r->except_ptr );
 
-           r = delegate_bandwidth(N(eosio.stake), a.aname, asset(net), asset(cpu));
-           BOOST_REQUIRE( !r->except_ptr );
+            r = delegate_bandwidth(N(eosio.stake), a.aname, core_from_string("0.1666"),  core_from_string("0.1666"));
+            BOOST_REQUIRE( !r->except_ptr );
         }
 
-        auto producer_candidates = {  // place of interest
-                N(proda), N(prodb), N(prodc), N(prodd), N(prode), N(prodq), N(prodr), N(prods), N(prodt),
-                N(produ), N(runnerup1), N(runnerup2), N(runnerup3)
-        };
+        BOOST_TEST(get_global_state()["total_activated_stake"].as<int64_t>() == 0);
 
+        auto producer_candidates = {
+                N(proda), N(prodb), N(prodc), N(prodd), N(prode), N(prodf), N(prodg),
+                N(prodh), N(prodi), N(prodj), N(prodk), N(prodl), N(prodm), N(prodn),
+                N(prodo), N(prodp), N(prodq), N(prodr), N(prods), N(prodt), N(produ),
+                N(runnerup1), N(runnerup2), N(runnerup3)
+        };
         // Register producers
         for( auto pro : producer_candidates ) {
            register_producer(pro);
@@ -253,32 +255,34 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
                                 ("producers", producers)
                      );
         };
-        votepro( N(b1), {N(proda), N(prodb), N(prodc), N(prodd), N(prode)} );
+        votepro( N(b1), { N(proda), N(prodb), N(prodc), N(prodd), N(prode), N(prodf), N(prodg),
+                           N(prodh), N(prodi), N(prodj), N(prodk), N(prodl), N(prodm), N(prodn),
+                           N(prodo), N(prodp), N(prodq), N(prodr), N(prods), N(prodt), N(produ)} );
+        
         votepro( N(whale2), {N(runnerup1), N(runnerup2), N(runnerup3)} );
-        votepro( N(whale3), {N(proda), N(prodb)} );
+        votepro( N(whale3), {N(proda), N(prodb), N(prodc), N(prodd), N(prode)} );
 
-        // Total Stakes = b1 + whale2 + whale3 stake = (100,000,000 - 1,000) + (20,000,000 - 1,000) + (30,000,000 - 1,000)
-        //BOOST_TEST(get_global_state()["total_activated_stake"].as<int64_t>() == 1499999997000);  // this is going to cause a failure
+        
+        BOOST_TEST(get_global_state()["total_activated_stake"].as<int64_t>() == 9996); 
 
         // No producers will be set, since the total activated stake is less than 150,000,000
         produce_blocks_for_n_rounds(2); // 2 rounds since new producer schedule is set when the first block of next round is irreversible
         auto active_schedule = control->head_block_state()->active_schedule;
-        //BOOST_TEST(active_schedule.producers.size() == 1);
-        //BOOST_TEST(active_schedule.producers.front().producer_name == "eosio");
+        BOOST_TEST(active_schedule.producers.size() == 1);
+        BOOST_TEST(active_schedule.producers.front().producer_name == "eosio");
 
         // Spend some time so the producer pay pool is filled by the inflation rate
         produce_min_num_of_blocks_to_spend_time_wo_inactive_prod(fc::seconds(30 * 24 * 3600)); // 30 days
         // Since the total activated stake is less than 150,000,000, it shouldn't be possible to claim rewards
-        //BOOST_REQUIRE_THROW(claim_rewards(N(runnerup1)), eosio_assert_message_exception);
+        BOOST_REQUIRE_THROW(claim_rewards(N(runnerup1)), eosio_assert_message_exception);
 
-        // This will increase the total vote stake by (40,000,000 - 1,000)
-        votepro( N(whale4), {N(prodq), N(prodr), N(prods), N(prodt), N(produ)} );
-        BOOST_TEST(get_global_state()["total_activated_stake"].as<int64_t>() == 1899999996000);
+        votepro( N(whale4), {N(proda), N(prodb), N(prodc), N(prodd), N(prode)} );
+        BOOST_TEST(get_global_state()["total_activated_stake"].as<int64_t>() == 13328);
 
         // Since the total vote stake is more than 150,000,000, the new producer set will be set
         produce_blocks_for_n_rounds(2); // 2 rounds since new producer schedule is set when the first block of next round is irreversible
         active_schedule = control->head_block_state()->active_schedule;
-        BOOST_REQUIRE(active_schedule.producers.size() == 5);  // The number of block producers has been reduced to just 5.
+        BOOST_REQUIRE(active_schedule.producers.size() == 5); 
         BOOST_TEST(active_schedule.producers.at(0).producer_name == "proda");
         BOOST_TEST(active_schedule.producers.at(1).producer_name == "prodb");
         BOOST_TEST(active_schedule.producers.at(2).producer_name == "prodc");
@@ -296,15 +300,18 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
         // Ensure that now is yet 10 years after 2018-06-01 yet
         BOOST_REQUIRE(control->head_block_time().time_since_epoch() < first_june_2028);
 
+        // We need to stake enough bandwidth and cpu for b1 before we can pay for the undelegatebw action.
+        delegate_bandwidth(N(eosio.stake), N(b1), core_from_string("10000000.0000"),  core_from_string("10000000.0000"));
+  
         // This should thrown an error, since block one can only unstake all his stake after 10 years
-
-        BOOST_REQUIRE_THROW(undelegate_bandwidth(N(b1), N(b1), core_from_string("49999500.0000"), core_from_string("49999500.0000")), eosio_assert_message_exception);
-
+        BOOST_REQUIRE_THROW(undelegate_bandwidth(N(b1), N(b1), core_from_string("10006664.0000"), core_from_string("10006664.0000")), eosio_assert_message_exception);
+       
         // Skip 10 years
         produce_block(first_june_2028 - control->head_block_time().time_since_epoch());
 
+        std::cout << "After" << '\n';
         // Block one should be able to unstake all his stake now
-        undelegate_bandwidth(N(b1), N(b1), core_from_string("49999500.0000"), core_from_string("49999500.0000"));
+        undelegate_bandwidth(N(b1), N(b1), core_from_string("1006664.0000"), core_from_string("1006664.0000"));
 
         return;
         produce_blocks(7000); /// produce blocks until virutal bandwidth can acomadate a small user
