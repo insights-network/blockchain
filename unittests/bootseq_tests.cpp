@@ -309,7 +309,6 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
         // Skip 10 years
         produce_block(first_june_2028 - control->head_block_time().time_since_epoch());
 
-        std::cout << "After" << '\n';
         // Block one should be able to unstake all his stake now
         undelegate_bandwidth(N(b1), N(b1), core_from_string("1006664.0000"), core_from_string("1006664.0000"));
 
