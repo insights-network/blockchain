@@ -258,12 +258,12 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
         votepro( N(b1), { N(proda), N(prodb), N(prodc), N(prodd), N(prode), N(prodf), N(prodg),
                            N(prodh), N(prodi), N(prodj), N(prodk), N(prodl), N(prodm), N(prodn),
                            N(prodo), N(prodp), N(prodq), N(prodr), N(prods), N(prodt), N(produ)} );
-        
+
         votepro( N(whale2), {N(runnerup1), N(runnerup2), N(runnerup3)} );
         votepro( N(whale3), {N(proda), N(prodb), N(prodc), N(prodd), N(prode)} );
 
-        
-        BOOST_TEST(get_global_state()["total_activated_stake"].as<int64_t>() == 9996); 
+
+        BOOST_TEST(get_global_state()["total_activated_stake"].as<int64_t>() == 9996);
 
         // No producers will be set, since the total activated stake is less than 150,000,000
         produce_blocks_for_n_rounds(2); // 2 rounds since new producer schedule is set when the first block of next round is irreversible
@@ -302,10 +302,10 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
 
         // We need to stake enough bandwidth and cpu for b1 before we can pay for the undelegatebw action.
         delegate_bandwidth(N(eosio.stake), N(b1), core_from_string("10000000.0000"),  core_from_string("10000000.0000"));
-  
+
         // This should thrown an error, since block one can only unstake all his stake after 10 years
         BOOST_REQUIRE_THROW(undelegate_bandwidth(N(b1), N(b1), core_from_string("10006664.0000"), core_from_string("10006664.0000")), eosio_assert_message_exception);
-       
+
         // Skip 10 years
         produce_block(first_june_2028 - control->head_block_time().time_since_epoch());
 
