@@ -282,7 +282,7 @@ BOOST_FIXTURE_TEST_CASE( bootseq_test, bootseq_tester ) {
         // Since the total vote stake is more than 150,000,000, the new producer set will be set
         produce_blocks_for_n_rounds(2); // 2 rounds since new producer schedule is set when the first block of next round is irreversible
         active_schedule = control->head_block_state()->active_schedule;
-        BOOST_REQUIRE(active_schedule.producers.size() == 5); 
+        BOOST_REQUIRE(active_schedule.producers.size() == 5);  // The number of block producers has been reduced to just 5.
         BOOST_TEST(active_schedule.producers.at(0).producer_name == "proda");
         BOOST_TEST(active_schedule.producers.at(1).producer_name == "prodb");
         BOOST_TEST(active_schedule.producers.at(2).producer_name == "prodc");
