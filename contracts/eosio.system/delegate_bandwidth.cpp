@@ -205,8 +205,7 @@ namespace eosiosystem {
       const int64_t max_claimable = 100ll; // INS activated stake is 1.000 = 1000
       const int64_t claimable = int64_t(max_claimable * double(now()-base_time) / (10*seconds_per_year) );
 
-      std::string x = "b1 can only claim their tokens over 10 years. Min stake: "+ std::to_string( max_claimable - claimable) + ", but attempted: "+std::to_string(stake);
-      eosio_assert( max_claimable - claimable <= stake, x.c_str() );
+      eosio_assert( max_claimable - claimable <= stake, "b1 can only claim their tokens over 10 years" );
    }
 
    void system_contract::changebw( account_name from, account_name receiver,
