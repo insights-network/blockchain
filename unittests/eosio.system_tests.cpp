@@ -1461,10 +1461,10 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
    // give a chance for everyone to produce blocks
    {
       produce_blocks(23 * 12 + 20);
-      bool all_4_produced = true;
+      bool all_5_produced = true;
       for (uint32_t i = 0; i < 5; ++i) {
          if (0 == get_producer_info(producer_names[i])["unpaid_blocks"].as<uint32_t>()) {
-            all_4_produced = false;
+            all_5_produced = false;
          }
       }
       bool rest_didnt_produce = true;
@@ -1473,7 +1473,7 @@ BOOST_FIXTURE_TEST_CASE(multiple_producer_pay, eosio_system_tester, * boost::uni
             rest_didnt_produce = false;
          }
       }
-      BOOST_REQUIRE(all_4_produced && rest_didnt_produce);
+      BOOST_REQUIRE(all_5_produced && rest_didnt_produce);
    }
 
    std::vector<double> vote_shares(producer_names.size());
